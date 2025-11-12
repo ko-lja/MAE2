@@ -13,8 +13,11 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.util.IConfigurableObject;
+import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.helpers.patternprovider.PatternProviderTarget;
+import appeng.util.ConfigManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -25,6 +28,7 @@ import org.checkerframework.checker.units.qual.C;
 
 import stone.mae2.appeng.helpers.patternprovider.PatternProviderTargetCache;
 import stone.mae2.bootstrap.MAE2Items;
+import stone.mae2.util.LoadedModsHelper;
 import stone.mae2.util.TransHelper;
 
 import java.util.HashSet;
@@ -213,6 +217,10 @@ public class PatternP2PTunnelLogic implements ICraftingMachine {
     ServerLevel level();
 
     default PatternProviderTargetCache getCache() {
+      if (LoadedModsHelper.isFork && getTargetCraftingProvider() != null) {
+        return new PatternProviderTargetCache(this.level(), this.pos(),
+          this.side(), this.source(), (ConfigManager) ((PatternProviderLogic) this.getTargetCraftingProvider()).getConfigManager());
+      }
       return new PatternProviderTargetCache(this.level(), this.pos(),
         this.side(), this.source());
     }

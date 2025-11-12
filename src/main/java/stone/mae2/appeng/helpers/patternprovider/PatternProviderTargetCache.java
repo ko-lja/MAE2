@@ -18,6 +18,7 @@ package stone.mae2.appeng.helpers.patternprovider;
 
 import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
@@ -27,10 +28,13 @@ import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.me.storage.CompositeStorage;
 import appeng.parts.automation.StackWorldBehaviors;
 import appeng.util.BlockApiCache;
+import appeng.util.ConfigManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
+import stone.mae2.util.LoadedModsHelper;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -43,10 +47,18 @@ import java.util.Set;
  * I claim no ownership of this code, it's a direct copy/paste from AE2.
  */
 public class PatternProviderTargetCache {
+    private final ResourceLocation programmedCircuit = new ResourceLocation("gtceu", "programmed_circuit");
+
     private final BlockApiCache<MEStorage> cache;
     private final Direction direction;
     private final IActionSource src;
     private final Map<AEKeyType, ExternalStorageStrategy> strategies;
+    private ConfigManager configManager;
+
+    public PatternProviderTargetCache(ServerLevel l, BlockPos pos, Direction direction, IActionSource src, ConfigManager configManager) {
+        this(l, pos, direction, src);
+        this.configManager = configManager;
+    }
 
     public PatternProviderTargetCache(ServerLevel l, BlockPos pos,
         Direction direction,
@@ -99,11 +111,37 @@ public class PatternProviderTargetCache {
 
             @Override
             public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                for (var stack : storage.getAvailableStacks())
-                {
-                    if (patternInputs.contains(stack.getKey().dropSecondary()))
-                    {
-                        return true;
+                if (LoadedModsHelper.isFork && configManager != null) {
+                    switch (configManager.getSetting(Settings.BLOCKING_MODE_EXTRA)) {
+                        case ALL -> {
+                            for (var stack : storage.getAvailableStacks()) {
+                                if (stack.getKey().getId().equals(programmedCircuit))
+                                    continue;
+                                return true;
+                            }
+                        }
+                        case DEFAULT -> {
+                            for (var stack : storage.getAvailableStacks()) {
+                                if (stack.getKey().getId().equals(programmedCircuit))
+                                    continue;
+                                if (patternInputs.contains(stack.getKey().dropSecondary()))
+                                    return true;
+                            }
+                        }
+                        case SMART -> {
+                            for (var stack : storage.getAvailableStacks()) {
+                                if (stack.getKey().getId().equals(programmedCircuit))
+                                    continue;
+                                if (!patternInputs.contains(stack.getKey().dropSecondary()))
+                                    return true;
+                            }
+                        }
+                    }
+                } else {
+                    for (var stack : storage.getAvailableStacks()) {
+                        if (patternInputs.contains(stack.getKey().dropSecondary())) {
+                            return true;
+                        }
                     }
                 }
                 return false;
