@@ -23,6 +23,7 @@ import appeng.api.parts.PartModels;
 import appeng.block.crafting.CraftingBlockItem;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
+import appeng.parts.p2p.P2PTunnelPart;
 import net.minecraft.Util;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -33,22 +34,23 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import stone.mae2.MAE2;
+import stone.mae2.integration.ae2cl.PatternMultiP2PTunnelCL;
+import stone.mae2.integration.ae2cl.PatternP2PTunnelPartCL;
 import stone.mae2.item.faulty.FaultyMemoryCardItem;
 import stone.mae2.parts.p2p.PatternP2PTunnelPart;
-import stone.mae2.parts.p2p.multi.FEMultiP2PTunnel;
-import stone.mae2.parts.p2p.multi.FluidMultiP2PTunnel;
-import stone.mae2.parts.p2p.multi.ItemMultiP2PTunnel;
-import stone.mae2.parts.p2p.multi.PatternMultiP2PTunnel;
-import stone.mae2.parts.p2p.multi.RedstoneMultiP2PTunnel;
+import stone.mae2.parts.p2p.multi.*;
+import stone.mae2.util.LoadedModsHelper;
+
+import static stone.mae2.util.LoadedModsHelper.isFork;
 
 public abstract class MAE2Items {
 
   public static final DeferredRegister<Item> ITEMS = DeferredRegister
     .create(ForgeRegistries.ITEMS, MAE2.MODID);
 
-  public static RegistryObject<PartItem<PatternP2PTunnelPart>> PATTERN_P2P_TUNNEL;
+  public static RegistryObject<PartItem<? extends P2PTunnelPart<?>>> PATTERN_P2P_TUNNEL;
 
-  public static RegistryObject<PartItem<PatternMultiP2PTunnel.Part>> PATTERN_MULTI_P2P_TUNNEL;
+  public static RegistryObject<PartItem<? extends MultiP2PTunnel.Part<?, ?, ?>>> PATTERN_MULTI_P2P_TUNNEL;
   public static RegistryObject<PartItem<RedstoneMultiP2PTunnel.Part>> REDSTONE_MULTI_P2P_TUNNEL;
   public static RegistryObject<PartItem<FEMultiP2PTunnel.Part>> FE_MULTI_P2P_TUNNEL;
   public static RegistryObject<PartItem<FluidMultiP2PTunnel.Part>> FLUID_MULTI_P2P_TUNNEL;
@@ -77,21 +79,25 @@ public abstract class MAE2Items {
     PATTERN_P2P_TUNNEL = Util.make(() -> {
       PartModels
         .registerModels(
-          PartModelsHelper.createModels(PatternP2PTunnelPart.class));
+          PartModelsHelper.createModels(isFork ? PatternP2PTunnelPartCL.class : PatternP2PTunnelPart.class));
       return ITEMS
         .register("pattern_p2p_tunnel",
-          () -> new PartItem<>(new Item.Properties(),
-            PatternP2PTunnelPart.class, PatternP2PTunnelPart::new));
+           isFork ? () -> new PartItem<>(new Item.Properties(),
+            PatternP2PTunnelPartCL.class, PatternP2PTunnelPartCL::new)
+            : () -> new PartItem<>(new Item.Properties(),
+              PatternP2PTunnelPart.class, PatternP2PTunnelPart::new));
     });
 
     PATTERN_MULTI_P2P_TUNNEL = Util.make(() -> {
       PartModels
         .registerModels(
-          PartModelsHelper.createModels(PatternMultiP2PTunnel.Part.class));
+          PartModelsHelper.createModels(isFork ? PatternMultiP2PTunnelCL.PartCL.class : PatternMultiP2PTunnel.Part.class));
       return ITEMS
         .register("pattern_multi_p2p_tunnel",
-          () -> new PartItem<>(new Item.Properties(),
-            PatternMultiP2PTunnel.Part.class, PatternMultiP2PTunnel.Part::new));
+          isFork ? () -> new PartItem<>(new Item.Properties(),
+            PatternMultiP2PTunnelCL.PartCL.class, PatternMultiP2PTunnelCL.PartCL::new)
+            : () -> new PartItem<>(new Item.Properties(),
+              PatternMultiP2PTunnel.Part.class, PatternMultiP2PTunnel.Part::new));
     });
     REDSTONE_MULTI_P2P_TUNNEL = Util.make(() -> {
       PartModels

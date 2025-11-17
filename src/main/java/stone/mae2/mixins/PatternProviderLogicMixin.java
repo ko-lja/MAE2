@@ -44,8 +44,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import stone.mae2.MAE2;
+import stone.mae2.integration.ae2cl.PatternP2PPartLogicCL;
+import stone.mae2.integration.ae2cl.PatternP2PTunnelLogicCL;
 import stone.mae2.parts.p2p.PatternP2PPartLogic.PatternP2PPartLogicHost;
 import stone.mae2.parts.p2p.PatternP2PTunnelLogic;
+import stone.mae2.util.LoadedModsHelper;
 
 import java.util.List;
 import java.util.Set;
@@ -78,14 +81,22 @@ public abstract class PatternProviderLogicMixin {
 
   @Inject(method = "pushPattern", at = @At("HEAD"))
   public void onPushStart(CallbackInfoReturnable<Boolean> cir) {
-    PatternP2PTunnelLogic.isBlocking = this.isBlocking();
+    if (LoadedModsHelper.isFork) {
+      PatternP2PTunnelLogicCL.isBlocking = this.isBlocking();
+    } else {
+      PatternP2PTunnelLogic.isBlocking = this.isBlocking();
+    }
   }
 
   // reset blocking mode in-case there's other providers that work with p2ps,
   // but weren't mixed into
   @Inject(method = "pushPattern", at = @At("TAIL"))
   public void onPushEnd(CallbackInfoReturnable<Boolean> cir) {
-    PatternP2PTunnelLogic.isBlocking = false;
+    if (LoadedModsHelper.isFork) {
+      PatternP2PTunnelLogicCL.isBlocking = false;
+    } else {
+      PatternP2PTunnelLogic.isBlocking = false;
+    }
   }
 
   @Inject(method = "updatePatterns", at = @At("TAIL"))
@@ -100,7 +111,9 @@ public abstract class PatternProviderLogicMixin {
 
       var craftingMachine = ICraftingMachine
         .of(level, adjPos, adjBeSide, adjBe);
-      if (craftingMachine instanceof PatternP2PTunnelLogic p2pLogic) {
+      if (LoadedModsHelper.isFork && craftingMachine instanceof PatternP2PTunnelLogicCL p2pLogicCl) {
+        p2pLogicCl.refreshInputs();
+      } else if (craftingMachine instanceof PatternP2PTunnelLogic p2pLogic) {
         p2pLogic.refreshInputs();
       }
     }
@@ -149,11 +162,15 @@ public abstract class PatternProviderLogicMixin {
         .getLevel()
         .getBlockEntity(sendPos.relative(sendDirection.getOpposite()));
 
-      if (maybeBE != null && maybeBE instanceof IPartHost host) {
+      if (maybeBE instanceof IPartHost host) {
         IPart maybeP2P = host.getPart(sendDirection);
-        if (maybeP2P != null
-          && maybeP2P instanceof PatternP2PPartLogicHost p2p) {
-          for (GenericStack stack : sendList) {
+        if (LoadedModsHelper.isFork && maybeP2P instanceof PatternP2PPartLogicCL.PatternP2PPartLogicHostCL p2p) {
+          for (var stack : sendList) {
+            p2p.addToSendList(stack.what(), stack.amount());
+          }
+          sendList.clear();
+        } else if (maybeP2P instanceof PatternP2PPartLogicHost p2p) {
+          for (var stack : sendList) {
             p2p.addToSendList(stack.what(), stack.amount());
           }
           sendList.clear();
