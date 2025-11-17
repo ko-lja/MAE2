@@ -229,7 +229,7 @@ public abstract class MultiP2PTunnel<T extends MultiP2PTunnel<T, L, P>, L extend
 
     public L getLogic() { return this.logic; }
 
-    protected final L setLogic(L logic) {
+    public final L setLogic(L logic) {
       return this.logic = logic;
     }
 

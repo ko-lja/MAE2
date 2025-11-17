@@ -44,8 +44,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import stone.mae2.MAE2;
-import stone.mae2.parts.p2p.PatternP2PPartLogic.PatternP2PPartLogicHost;
-import stone.mae2.parts.p2p.PatternP2PTunnelLogic;
+import appeng.helpers.patternprovider.PatternP2PPartLogic.PatternP2PPartLogicHost;
+import appeng.helpers.patternprovider.PatternP2PTunnelLogic;
 
 import java.util.List;
 import java.util.Set;

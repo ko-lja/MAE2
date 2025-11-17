@@ -34,11 +34,11 @@ import net.minecraftforge.registries.RegistryObject;
 
 import stone.mae2.MAE2;
 import stone.mae2.item.faulty.FaultyMemoryCardItem;
-import stone.mae2.parts.p2p.PatternP2PTunnelPart;
+import appeng.helpers.patternprovider.PatternP2PTunnelPart;
 import stone.mae2.parts.p2p.multi.FEMultiP2PTunnel;
 import stone.mae2.parts.p2p.multi.FluidMultiP2PTunnel;
 import stone.mae2.parts.p2p.multi.ItemMultiP2PTunnel;
-import stone.mae2.parts.p2p.multi.PatternMultiP2PTunnel;
+import appeng.helpers.patternprovider.PatternMultiP2PTunnel;
 import stone.mae2.parts.p2p.multi.RedstoneMultiP2PTunnel;
 
 public abstract class MAE2Items {

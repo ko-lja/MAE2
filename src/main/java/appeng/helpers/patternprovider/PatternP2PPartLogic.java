@@ -1,4 +1,4 @@
-package stone.mae2.parts.p2p;
+package appeng.helpers.patternprovider;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
@@ -8,7 +8,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.helpers.patternprovider.PatternProviderTarget;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -17,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import stone.mae2.MAE2;
 import stone.mae2.bootstrap.MAE2Config.TickRates.TickRate;
-import stone.mae2.parts.p2p.PatternP2PTunnelLogic.Target;
+import appeng.helpers.patternprovider.PatternP2PTunnelLogic.Target;
 
 import java.util.HashSet;
 import java.util.List;

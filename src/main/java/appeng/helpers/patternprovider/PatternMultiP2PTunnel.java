@@ -1,4 +1,4 @@
-package stone.mae2.parts.p2p.multi;
+package appeng.helpers.patternprovider;
 
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.networking.IGrid;
@@ -11,7 +11,6 @@ import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.capabilities.Capabilities;
-import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.p2p.P2PModels;
@@ -26,19 +25,17 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import stone.mae2.MAE2;
-import stone.mae2.appeng.helpers.patternprovider.PatternProviderTargetCache;
-import stone.mae2.parts.p2p.PatternP2PPartLogic;
-import stone.mae2.parts.p2p.PatternP2PPartLogic.PatternP2PPartLogicHost;
-import stone.mae2.parts.p2p.PatternP2PTunnelLogic;
-import stone.mae2.parts.p2p.PatternP2PTunnelLogic.PatternP2PTunnel;
-import stone.mae2.parts.p2p.PatternP2PTunnelLogic.Target;
+import appeng.helpers.patternprovider.PatternP2PPartLogic.PatternP2PPartLogicHost;
+import appeng.helpers.patternprovider.PatternP2PTunnelLogic.PatternP2PTunnel;
+import appeng.helpers.patternprovider.PatternP2PTunnelLogic.Target;
+import stone.mae2.parts.p2p.multi.MultiP2PTunnel;
 import stone.mae2.util.TransHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PatternMultiP2PTunnel extends
-  MultiP2PTunnel<PatternMultiP2PTunnel, PatternMultiP2PTunnel.Logic, PatternMultiP2PTunnel.Part>
+        MultiP2PTunnel<PatternMultiP2PTunnel, PatternMultiP2PTunnel.Logic, PatternMultiP2PTunnel.Part>
   implements PatternP2PTunnel {
 
   protected List<Part> inputs;
